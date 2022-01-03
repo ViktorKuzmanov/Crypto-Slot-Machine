@@ -188,3 +188,19 @@ function toggleAudio(){
 function randomInt(min, max){
 	return Math.floor((Math.random() * (max-min+1)) + min);
 }
+
+let currentBetInEther = 0.1
+const betAmount = document.getElementById("betAmount")
+// TODO: put upper and lower limit on how much eth can you bet
+function lowerBet() {
+	currentBetInEther = (currentBetInEther * 10 - 0.1 * 10) / 10
+	betAmount.innerHTML = currentBetInEther
+}
+
+function raiseBet() {
+	// we are just adding 0.1 here but because floating point aritmetic 
+	// is not always corrent we have to multipy and divide by 10
+	currentBetInEther = (currentBetInEther * 10 + 0.1 * 10) / 10
+	betAmount.innerHTML = currentBetInEther
+	console.log(currentBetInEther)
+}
