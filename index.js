@@ -1,8 +1,14 @@
-let eventContractAddress = "0x70aB7a467B00F9e0d58C3fC6807E3C0162026195"
+let eventContractAddress = "0x014EA49BAb8A27e95b6B815777C98AADD0C9bB48"
 let eventContractApi = [
 	{
 		"anonymous": false,
-		"inputs": [ 
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
@@ -57,22 +63,23 @@ async function doSlot(){
     let slotContract = new ethers.Contract(eventContractAddress, eventContractApi, provider.getSigner())
     await slotContract.emitEvent()
 
-    var numChanges = randomInt(1,4)*7;
+    var numChanges
 	// this is how much time before the slot sign is revealed(how much time it spins)
 	// and also how much time a0 through a7 is spinned till we end up on a random aNumber
 	var numberSlot1
 	var numberSlot2
 	var numberSlot3
 
-    slotContract.on("GenerateNumbers", (num1, num2, num3)=>{
+    slotContract.on("GenerateNumbers", (num0, num1, num2, num3) => {
         console.log("numbers were generated - i listeded to the event")
 
+        numChanges = parseInt(num0.toString());
         numberSlot1 = parseInt(num1.toString())
         numberSlot2 = parseInt(num2.toString())
         numberSlot3 = parseInt(num3.toString())
     })
     
-	await new Promise(r => setTimeout(r, 50000));
+	await new Promise(r => setTimeout(r, 35000));
 
     console.log(numChanges)
 
