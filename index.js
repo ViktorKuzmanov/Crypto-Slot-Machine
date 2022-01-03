@@ -34,17 +34,6 @@ let eventContractApi = [
 	}
 ]
 
-console.log("started listening for events")
-const provider = new ethers.providers.Web3Provider(window.ethereum)
-let eventContract = new ethers.Contract(eventContractAddress, eventContractApi, provider)
-
-eventContract.on("GenerateNumbers", (num1, num2, num3)=>{
-    console.log("numbers were generated")
-    console.log(num1.toString())
-    console.log(num2.toString())
-    console.log(num3.toString())
-})
-
 // send transaction when user clicks on button
 // wait(spin) until the transaction is mined
 // once trnasction is mined read event and show numbers
@@ -60,15 +49,32 @@ var audio = false;
 let status = document.getElementById("status")
 var info = true;
 
-function doSlot(){
+async function doSlot(){
 	if (doing){return null;}
 	doing = true;
-	var numChanges = randomInt(1,4)*7
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    let slotContract = new ethers.Contract(eventContractAddress, eventContractApi, provider.getSigner())
+    await slotContract.emitEvent()
+
+    var numChanges = randomInt(1,4)*7;
 	// this is how much time before the slot sign is revealed(how much time it spins)
 	// and also how much time a0 through a7 is spinned till we end up on a random aNumber
-	var numberSlot1 = numChanges+randomInt(1,7)
-	var numberSlot2 = numChanges+2*7+randomInt(1,7)
-	var numberSlot3 = numChanges+4*7+randomInt(1,7)
+	var numberSlot1
+	var numberSlot2
+	var numberSlot3
+
+    slotContract.on("GenerateNumbers", (num1, num2, num3)=>{
+        console.log("numbers were generated - i listeded to the event")
+
+        numberSlot1 = parseInt(num1.toString())
+        numberSlot2 = parseInt(num2.toString())
+        numberSlot3 = parseInt(num3.toString())
+    })
+    
+	await new Promise(r => setTimeout(r, 50000));
+
+    console.log(numChanges)
 
 	var i1 = 0;
 	var i2 = 0;
