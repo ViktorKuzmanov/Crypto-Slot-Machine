@@ -1,3 +1,4 @@
+// WARNING: THIS CONTRACT IS DEPRICATED
 // this SlotMachine contract is deployed on the kovan testnet
 let eventContractAddress = "0xf4cedF0a710F3B399E2968DAAD34951e1d915e4D"
 let eventContractApi = [
