@@ -1,39 +1,20 @@
-let eventContractAddress = "0x014EA49BAb8A27e95b6B815777C98AADD0C9bB48"
+// this SlotMachine contract is deployed on the kovan testnet
+let eventContractAddress = "0xf4cedF0a710F3B399E2968DAAD34951e1d915e4D"
 let eventContractApi = [
 	{
-		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
+				"internalType": "bytes32",
+				"name": "requestId",
+				"type": "bytes32"
 			},
 			{
-				"indexed": false,
 				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "",
+				"name": "randomness",
 				"type": "uint256"
 			}
 		],
-		"name": "GenerateNumbers",
-		"type": "event"
-	},
-	{
-		"inputs": [],
-		"name": "emitEvent",
+		"name": "rawFulfillRandomness",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
