@@ -1,7 +1,93 @@
 // WARNING: THIS CONTRACT IS DEPRICATED
 // this SlotMachine contract is deployed on the kovan testnet
-let eventContractAddress = "0xf4cedF0a710F3B399E2968DAAD34951e1d915e4D"
-let eventContractApi = [
+let slotMachineContractAddress = "0xC174d0bcD0b20F9723Eec70e931cAd9Db9b51dc0"
+let slotMachineContractAbi = [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "GenerateNumbers",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "GenerateOneNumber",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "randomValue",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "n",
+				"type": "uint256"
+			}
+		],
+		"name": "getMultipleRandomNumbers",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "expandedValues",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getRandomNumber",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "requestId",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
 	{
 		"inputs": [
 			{
@@ -18,6 +104,38 @@ let eventContractApi = [
 		"name": "rawFulfillRandomness",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "randomNumbers",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "randomResult",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	}
 ]
@@ -41,29 +159,32 @@ async function doSlot(){
 	if (doing){return null;}
 	doing = true;
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-    let slotContract = new ethers.Contract(eventContractAddress, eventContractApi, provider.getSigner())
-    await slotContract.emitEvent()
+	const provider = new ethers.providers.Web3Provider(window.ethereum)
+    let slotContract = new ethers.Contract(slotMachineContractAddress, slotMachineContractAbi, provider.getSigner())
+    await slotContract.getRandomNumber()
 
-    var numChanges
+	var numChanges
 	// this is how much time before the slot sign is revealed(how much time it spins)
 	// and also how much time a0 through a7 is spinned till we end up on a random aNumber
 	var numberSlot1
 	var numberSlot2
 	var numberSlot3
-
-    slotContract.on("GenerateNumbers", (num0, num1, num2, num3) => {
-        console.log("numbers were generated - i listeded to the event")
-
-        numChanges = parseInt(num0.toString());
-        numberSlot1 = parseInt(num1.toString())
-        numberSlot2 = parseInt(num2.toString())
-        numberSlot3 = parseInt(num3.toString())
-    })
     
-	await new Promise(r => setTimeout(r, 35000));
+    slotContract.on("GenerateNumbers", (num0, num1, num2, num3) => {
+        console.log("4 numbers were generated - i listeded GenerateNumbers event")
 
-    console.log(numChanges)
+		numChanges = parseInt(num0.toString().substring(0,2)) * 7
+		numberSlot1 = numChanges + parseInt(num0.toString().substring(0,2))
+		numberSlot2 = numChanges+2*7+parseInt(num2.toString().substring(0,2))
+		numberSlot3 = numChanges+4*7+parseInt(num3.toString().substring(0,2))
+
+		console.log(numChanges)
+		console.log(numberSlot1)
+		console.log(numberSlot2)
+		console.log(numberSlot3)
+    })
+
+	await new Promise(r => setTimeout(r, 200000));
 
 	var i1 = 0;
 	var i2 = 0;
